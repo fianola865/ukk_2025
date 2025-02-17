@@ -11,7 +11,7 @@ class IndexUser extends StatefulWidget {
 }
 
 class _IndexUserState extends State<IndexUser> {
-  List<Map<String, dynamic>> User = [];
+  List<Map<String, dynamic>> user = [];
 
   
 
@@ -19,24 +19,24 @@ class _IndexUserState extends State<IndexUser> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    user();
+    fetchuser();
   }
   
   Future<void> deleteuser(int id) async{
     try{
     await Supabase.instance.client.from('user').delete().eq('UserID', id);
-    user();
+    fetchuser();
     } catch (e){
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('error $e')));
     }
 
   }
 
-  Future<void> user() async{
+  Future<void> fetchuser() async{
     try{
     final response = await Supabase.instance.client.from('user').select();
     setState(() {
-      User = List<Map<String, dynamic>>.from(response);
+      user = List<Map<String, dynamic>>.from(response);
      
     });
     } catch(e){
@@ -50,14 +50,14 @@ class _IndexUserState extends State<IndexUser> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: User.isEmpty
+      body: user.isEmpty
           ? Center(
             child: Text('Data user belum ditambahkan'),
           )
           :ListView.builder(
-              itemCount: User.length,
+              itemCount: user.length,
               itemBuilder: (context, index){
-                final user = User[index];
+                final usr = user[index];
                 return Card(
                   elevation: 4,
                   margin: EdgeInsets.symmetric(vertical: 8),
@@ -69,17 +69,22 @@ class _IndexUserState extends State<IndexUser> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('Username: ${user['Username'] ?? 'tidak tersedia'}'),
-                        Text('Password: ${user['Password'] ?? 'Tidak tersedia'}'),
-                        Text('Role: ${user['Role'] ?? 'tidak tersedia'}'),
+                        Text('Username: ${usr['Username'] ?? 'tidak tersedia'}',
+                        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),),
+                        Text('Password: ${usr['Password']?.toString() ?? 'Tidak tersedia'}',
+                        style: TextStyle( fontSize: 18),),
+                        Text('Role: ${usr['Role']?.toString() ?? 'tidak tersedia'}',
+                        style: TextStyle( fontSize: 16),),
+                        
                         Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
                           children: [
                             IconButton(onPressed: (){
-                              final UserID = user['UserID'];
+                              final UserID = usr['UserID'];
                               if(UserID != 0){
                                 Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => UpdateUser(UserID: UserID)));
                               }
-                            }, icon: Icon(Icons.edit)),
+                            }, icon: Icon(Icons.edit, color: Colors.blue,)),
                             IconButton(onPressed: (){
                               showDialog(
                                 context: context, builder: (BuildContext context){
@@ -91,14 +96,14 @@ class _IndexUserState extends State<IndexUser> {
                                         Navigator.pop(context);
                                       }, child: Text('Batal')),
                                       ElevatedButton(onPressed: (){
-                                        deleteuser(user['UserID']); 
+                                        deleteuser(usr['UserID']); 
                                         Navigator.pop(context);
                                       }, child: Text('Hapus'))
                                     ],
                                   );
                                 }
                               );
-                            }, icon: Icon(Icons.delete))
+                            }, icon: Icon(Icons.delete, color: Colors.red,))
                           ],
                         )
                       ],

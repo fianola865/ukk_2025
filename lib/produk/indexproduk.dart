@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:ukk_2025/produk/harga.dart';
-import 'package:ukk_2025/produk/insertpelanggan.dart';
-import 'package:ukk_2025/produk/updatepelanggan.dart';
+import 'package:ukk_2025/produk/insertproduk.dart';
+import 'package:ukk_2025/produk/updateproduk.dart';
 
 class IndexProduk extends StatefulWidget {
   const IndexProduk({super.key});
@@ -13,7 +13,9 @@ class IndexProduk extends StatefulWidget {
 
 class _IndexProdukState extends State<IndexProduk> {
   List<Map<String, dynamic>> produk = [];
-  bool isLoading = true;
+  List<Map<String, dynamic>> filteredproduk = [];
+  final seletedproduk = TextEditingController();
+  
 
   @override
   void initState() {
@@ -26,10 +28,7 @@ class _IndexProdukState extends State<IndexProduk> {
       await Supabase.instance.client.from('produk').delete().eq('ProdukID', id);
       fetchProduk();
     } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text('Error: $e')));
-      }
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error: $e')));
     }
   }
 
@@ -37,31 +36,58 @@ class _IndexProdukState extends State<IndexProduk> {
     
     try {
       final response = await Supabase.instance.client.from('produk').select();
-      if (mounted) {
-        setState(() {
-          produk = List<Map<String, dynamic>>.from(response);
-          isLoading = false;
-        });
-      }
+      
+      setState(() {
+        produk = List<Map<String, dynamic>>.from(response);
+        filteredproduk = produk;
+
+      });
+      
     } catch (e) {
       print('Error: $e');
-      if (mounted) {
-        
-      }
+      
     }
   }
-
+  void seletectproduk(String query) {
+    setState(() {
+    if(query.isEmpty){
+      filteredproduk = produk;
+    } else {
+    filteredproduk = produk
+          .where((item) => item['NamaProduk']
+              .toLowerCase()
+              .contains(query.toLowerCase()))
+          .toList();
+    }
+    });
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: produk.isEmpty
+      appBar: AppBar(
+        title: TextField(
+          controller: seletedproduk,
+          onChanged: seletectproduk,
+          decoration: InputDecoration(
+            hintText: 'Cari produk...',
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(8)
+            ),
+          ),
+        ),
+      ),
+      body: filteredproduk.isEmpty
+            ? Center(
+              child: Text('tidak ada data produk'),
+            )
+              : produk.isEmpty
               ? Center(
                   child: Text('Data produk belum ditambahkan'),
                 )
               : ListView.builder(
-                  itemCount: produk.length,
+                  itemCount: filteredproduk.length,
                   itemBuilder: (context, index) {
-                    final item = produk[index];
+                    final item = filteredproduk[index];
                     return InkWell(
                       onTap: () {
                         Navigator.pushReplacement(
@@ -83,11 +109,15 @@ class _IndexProdukState extends State<IndexProduk> {
                             children: [
                               Text(
                                 'Nama Produk: ${item['NamaProduk'] ?? 'Tidak tersedia'}',
-                                style: TextStyle(fontWeight: FontWeight.bold),
+                                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
                               ),
-                              Text('Harga: ${item['Harga'] ?? 'Tidak tersedia'}'),
-                              Text('Stok: ${item['Stok'] ?? 'Tidak tersedia'}'),
+                              Text('Harga: ${item['Harga'] ?? 'Tidak tersedia'}',
+                              style: TextStyle(fontSize: 16),),
+                              Text('Stok: ${item['Stok'] ?? 'Tidak tersedia'}',
+                              style: TextStyle(fontSize: 14),),
+                              
                               Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
                                 children: [
                                   IconButton(
                                     onPressed: () {
@@ -102,7 +132,7 @@ class _IndexProdukState extends State<IndexProduk> {
                                         );
                                       }
                                     },
-                                    icon: Icon(Icons.edit),
+                                    icon: Icon(Icons.edit, color: Colors.blue,),
                                   ),
                                   IconButton(
                                     onPressed: () {

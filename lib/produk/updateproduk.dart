@@ -28,8 +28,8 @@ class _UpdateProdukState extends State<UpdateProduk> {
     final pelanggan = await Supabase.instance.client.from('produk').select().eq('ProdukID', widget.ProdukID).single();
     setState(() {
       _np.text = pelanggan['NamaProduk'] ?? '';
-      _hr.text = pelanggan['Harga'] ?? '';
-      _st.text = pelanggan['Stok'] ?? '';
+      _hr.text = pelanggan['Harga']?.toString() ?? '';
+      _st.text = pelanggan['Stok']?.toString() ?? '';
     });
   }
 
