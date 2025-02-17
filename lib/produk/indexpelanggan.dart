@@ -67,7 +67,7 @@ class _IndexProdukState extends State<IndexProduk> {
                         Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => Harga(produk: item)),
+                              builder: (context) => harga(produk: item)),
                         );
                       },
                       child: Card(

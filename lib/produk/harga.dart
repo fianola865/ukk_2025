@@ -1,84 +1,75 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:ukk_2025/homepage.dart';
 
-class Harga extends StatefulWidget {
+class harga extends StatefulWidget {
   final Map<String, dynamic> produk;
-  const Harga({Key? key, required this.produk}) : super(key: key);
+  const harga({Key? key, required this.produk}) : super(key: key);
 
   @override
-  State<Harga> createState() => _HargaState();
+  _hargaState createState() => _hargaState();
 }
 
-class _HargaState extends State<Harga> {
+class _hargaState extends State<harga> {
   int jumlahPesanan = 0;
   int totalHarga = 0;
   int stokAkhir = 0;
-  int? pilihPelanggan;
-  List<Map<String, dynamic>> pelangganlist = [];
+  int? selectedPelangganId;
+  List<Map<String, dynamic>> pelangganList = [];
 
   @override
   void initState() {
     super.initState();
     fetchPelanggan();
+    stokAkhir = widget.produk['Stok'] ?? 0;
   }
 
   Future<void> fetchPelanggan() async {
-    try {
-      final response = await Supabase.instance.client.from('pelanggan').select('PelangganID, NamaPelanggan');
-      if (mounted) {
-        setState(() {
-          pelangganlist = List<Map<String, dynamic>>.from(response);
-        });
-      }
-    } catch (e) {
-      debugPrint('Error fetching pelanggan: $e');
+    final supabase = Supabase.instance.client;
+    final response = await supabase.from('pelanggan').select('PelangganID, NamaPelanggan');
+
+    if (response.isNotEmpty) {
+      setState(() {
+        pelangganList = List<Map<String, dynamic>>.from(response);
+      });
     }
   }
 
-  void updateData(int harga, int delta, int stok) {
+  void updateJumlahPesanan(int harga, int delta) {
     setState(() {
-      jumlahPesanan = (jumlahPesanan + delta).clamp(0, stok);
-      totalHarga = jumlahPesanan * harga;
-      stokAkhir = (stok - jumlahPesanan).clamp(0, stok);
+      if (jumlahPesanan + delta >= 0 && jumlahPesanan + delta <= stokAkhir) {
+        jumlahPesanan += delta;
+        totalHarga = jumlahPesanan * harga;
+      }
     });
   }
 
   Future<void> simpanPesanan() async {
+    final supabase = Supabase.instance.client;
     final produkID = widget.produk['ProdukID'];
-    final namaProduk = widget.produk['NamaProduk'];
-    final harga = widget.produk['Harga'];
 
-    if (produkID == null || pilihPelanggan == null || jumlahPesanan <= 0) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Mohon lengkapi semua data sebelum menyimpan')),
-      );
+    if (produkID == null || selectedPelangganId == null || jumlahPesanan <= 0) {
+      print("Gagal menyimpan, pastikan semua data sudah lengkap.");
       return;
     }
 
     try {
-      final penjualan = await Supabase.instance.client.from('detailpenjualan').insert({
-        'TotalHarga': totalHarga,
-        'PelangganID': pilihPelanggan
+      final penjualan = await supabase.from('detailpenjualan').insert({
+        'PenjualanID': selectedPelangganId,
+        'ProdukID': produkID,
+        'JumlahProduk': jumlahPesanan,
+        'Subtotal': totalHarga,
       }).select().single();
 
       if (penjualan.isNotEmpty) {
-        await Supabase.instance.client.from('produk').update({
-          'NamaProduk': namaProduk,
-          'Harga': harga,
-          'Stok': stokAkhir
+        await supabase.from('produk').update({
+          'Stok': stokAkhir - jumlahPesanan,
         }).eq('ProdukID', produkID);
 
-        if (mounted) {
-          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const homepage()));
-        }
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => homepage()));
       }
     } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Terjadi kesalahan: $e')));
-      }
+      print("Error saat menyimpan pesanan: $e");
     }
   }
 
@@ -86,14 +77,13 @@ class _HargaState extends State<Harga> {
   Widget build(BuildContext context) {
     final produk = widget.produk;
     final harga = produk['Harga'] ?? 0;
-    final stok = produk['Stok'] ?? 0;
 
     return Scaffold(
       appBar: AppBar(
         title: const Text('Detail Produk'),
         backgroundColor: Colors.green,
       ),
-      body: Padding(
+      body: Container(
         padding: const EdgeInsets.all(16),
         child: Card(
           elevation: 4,
@@ -102,50 +92,50 @@ class _HargaState extends State<Harga> {
             padding: const EdgeInsets.all(16),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
               children: [
                 Text('Nama Produk: ${produk['NamaProduk'] ?? 'Tidak Tersedia'}', style: const TextStyle(fontSize: 20)),
                 const SizedBox(height: 16),
                 Text('Harga: $harga', style: const TextStyle(fontSize: 20)),
                 const SizedBox(height: 16),
-                Text('Stok: $stok', style: const TextStyle(fontSize: 20)),
+                Text('Stok: $stokAkhir', style: const TextStyle(fontSize: 20)),
                 const SizedBox(height: 16),
+
                 DropdownButtonFormField<int>(
-                  value: pilihPelanggan,
-                  hint: const Text('Pilih Pelanggan'),
-                  items: pelangganlist.isNotEmpty
-                      ? pelangganlist.map((pel) {
-                          return DropdownMenuItem<int>(
-                            value: pel['PelangganID'],
-                            child: Text(pel['NamaPelanggan']),
-                          );
-                        }).toList()
-                      : [],
-                  onChanged: (value) => setState(() => pilihPelanggan = value),
+                  value: selectedPelangganId,
+                  items: pelangganList.map((pelanggan) {
+                    return DropdownMenuItem<int>(
+                      value: pelanggan['PelangganID'],
+                      child: Text(pelanggan['NamaPelanggan']),
+                    );
+                  }).toList(),
+                  onChanged: (value) {
+                    setState(() {
+                      selectedPelangganId = value;
+                    });
+                  },
                   decoration: const InputDecoration(
-                    labelText: 'Pelanggan',
+                    labelText: 'Pilih Pelanggan',
                     border: OutlineInputBorder(),
                   ),
-                  disabledHint: pelangganlist.isEmpty
-                      ? const Text('Tidak ada pelanggan tersedia')
-                      : null,
                 ),
-                SizedBox(height: 16),
+                const SizedBox(height: 16),
+
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     IconButton(
-                      onPressed: () => updateData(harga, -1, stok),
+                      onPressed: () => updateJumlahPesanan(harga, -1),
                       icon: const Icon(Icons.remove),
                     ),
                     Text('$jumlahPesanan', style: const TextStyle(fontSize: 20)),
                     IconButton(
-                      onPressed: () => updateData(harga, 1, stok),
+                      onPressed: () => updateJumlahPesanan(harga, 1),
                       icon: const Icon(Icons.add),
                     ),
                   ],
                 ),
                 const SizedBox(height: 16),
+
                 Row(
                   children: [
                     TextButton(

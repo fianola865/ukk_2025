@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:ukk_2025/pelanggan/indexpelanggan.dart';
-import 'package:ukk_2025/penjualan/penjualan.dart';
 import 'package:ukk_2025/produk/indexpelanggan.dart';
 import 'package:ukk_2025/user/indexuser.dart';
 class homepage extends StatefulWidget {
@@ -30,7 +29,7 @@ class _homepageState extends State<homepage> {
        body: TabBarView(
         children: [
           IndexPelanggan(),
-          IndexPenjualan(),
+          // IndexPenjualan(),
           IndexProduk(),
           Center(child: Text('detail produk')),
           IndexUser(),
