@@ -1,7 +1,8 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:ukk_2025/homepage.dart';
+import 'package:ukk_2025/admin/homepageadmin.dart';
+import 'package:ukk_2025/petugas/homepagepetugas.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -63,6 +64,7 @@ class _LoginPageState extends State<LoginPage> {
   final _usr = TextEditingController();
   final _pw = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+  
 
   Future<void> loginUser() async {
     if (_formKey.currentState!.validate()) {
@@ -72,26 +74,47 @@ class _LoginPageState extends State<LoginPage> {
       try {
         final response = await Supabase.instance.client
             .from('user')
-            .select('UserID, Username, Password')
+            .select('UserID, Username, Password, Role')
             .eq('Username', username)
             .single();
 
-        if (response['Password'] != password) {
+        if (response == null){
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Username atau password salah')),
-          );
-        } else {
-          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => homepage()));
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Login berhasil')),
+            SnackBar(content: Text('username atau password tidak ditemukan')),
           );
         }
-      } catch (e) {
+        if (response['Password'] == password) {
+        final role = response['Role'];
+        final userId = response['UserID']; 
+        print('User ID: $userId'); 
+
+        if (role == 'admin') {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => const HomePageAdmin()),
+          );
+        } else if (role == 'petugas'){
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => const HomePagePetugas()),
+          );
+        }
+        else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Role tidak dikenal')),
+          );
+        }
+      } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('error $e')),
+          const SnackBar(content: Text('Password salah')),
         );
       }
+    } catch (error) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Terjadi kesalahan: $error')),
+      );
     }
+  }
   }
 
   @override

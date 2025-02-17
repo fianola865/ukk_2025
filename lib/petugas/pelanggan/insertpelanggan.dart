@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:ukk_2025/homepage.dart';
+import 'package:ukk_2025/petugas/homepagepetugas.dart';
 
 class Insertpelanggan extends StatefulWidget {
   const Insertpelanggan({super.key});
@@ -33,11 +33,11 @@ class _InsertpelangganState extends State<Insertpelanggan> {
               SnackBar(content: Text('Tidak berhasil menambahkan user')));
         } else {
           Navigator.pushReplacement(
-              context, MaterialPageRoute(builder: (context) => homepage()));
+              context, MaterialPageRoute(builder: (context) => HomePagePetugas()));
         }
       } catch (e) {
         Navigator.pushReplacement(
-              context, MaterialPageRoute(builder: (context) => homepage()));
+              context, MaterialPageRoute(builder: (context) => HomePagePetugas()));
       }
     }
   }
@@ -97,6 +97,9 @@ class _InsertpelangganState extends State<Insertpelanggan> {
                   }
                   if (value.length > 12) {
                     return 'tidak boleh lebih dari 12';
+                  }
+                  if (int.tryParse(value) == null) {
+                    return 'Harus berupa angka';
                   }
                   return null;
                 },

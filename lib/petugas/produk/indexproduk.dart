@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:ukk_2025/produk/harga.dart';
-import 'package:ukk_2025/produk/insertproduk.dart';
-import 'package:ukk_2025/produk/updateproduk.dart';
+import 'package:ukk_2025/admin/produk/harga.dart';
+import 'package:ukk_2025/petugas/produk/updateproduk.dart';
+import 'package:ukk_2025/petugas/user/insertuser.dart';
 
 class IndexProduk extends StatefulWidget {
   const IndexProduk({super.key});
@@ -177,7 +177,7 @@ class _IndexProdukState extends State<IndexProduk> {
         onPressed: () {
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (context) => insertProduk()),
+            MaterialPageRoute(builder: (context) => Insertuser()),
           );
         },
         child: Icon(Icons.add),

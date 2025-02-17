@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:ukk_2025/user/insertuser.dart';
-import 'package:ukk_2025/user/updateuser.dart';
 
 class IndexUser extends StatefulWidget {
   const IndexUser({super.key});
@@ -70,42 +68,11 @@ class _IndexUserState extends State<IndexUser> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text('Username: ${usr['Username'] ?? 'tidak tersedia'}',
-                        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),),
+                        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),),
                         Text('Password: ${usr['Password']?.toString() ?? 'Tidak tersedia'}',
                         style: TextStyle( fontSize: 18),),
                         Text('Role: ${usr['Role']?.toString() ?? 'tidak tersedia'}',
                         style: TextStyle( fontSize: 16),),
-                        
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            IconButton(onPressed: (){
-                              final UserID = usr['UserID'];
-                              if(UserID != 0){
-                                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => UpdateUser(UserID: UserID)));
-                              }
-                            }, icon: Icon(Icons.edit, color: Colors.blue,)),
-                            IconButton(onPressed: (){
-                              showDialog(
-                                context: context, builder: (BuildContext context){
-                                  return AlertDialog(
-                                    title: Text('Hapus pelanggan'),
-                                    content: Text('Apakah anda yakin menghapus use ini?'),
-                                    actions: [
-                                      ElevatedButton(onPressed: (){
-                                        Navigator.pop(context);
-                                      }, child: Text('Batal')),
-                                      ElevatedButton(onPressed: (){
-                                        deleteuser(usr['UserID']); 
-                                        Navigator.pop(context);
-                                      }, child: Text('Hapus'))
-                                    ],
-                                  );
-                                }
-                              );
-                            }, icon: Icon(Icons.delete, color: Colors.red,))
-                          ],
-                        )
                       ],
                     ),
                   ),
@@ -113,9 +80,7 @@ class _IndexUserState extends State<IndexUser> {
               },
             ),
           
-      floatingActionButton: FloatingActionButton(onPressed: (){
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Insertuser()));
-      }, child: Icon(Icons.add)),
+      
     );
   }
 }

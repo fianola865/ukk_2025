@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:ukk_2025/homepage.dart';
+import 'package:ukk_2025/petugas/homepagepetugas.dart';
 
 class Insertuser extends StatefulWidget {
   const Insertuser({super.key});
@@ -14,7 +14,10 @@ class _InsertuserState extends State<Insertuser> {
   final _password = TextEditingController();
   final _role = TextEditingController();
   final _formKey = GlobalKey<FormState>();
-
+  List<String> exitingusername = [];
+  String ? selectrole;
+  List<String> listrole = ['petugas', 'admin'];
+  
   Future<void> user() async {
     if (_formKey.currentState!.validate()) {
       final username = _username.text.trim();
@@ -33,11 +36,11 @@ class _InsertuserState extends State<Insertuser> {
               SnackBar(content: Text('Tidak berhasil menambahkan user')));
         } else {
           Navigator.pushReplacement(
-              context, MaterialPageRoute(builder: (context) => homepage()));
+              context, MaterialPageRoute(builder: (context) => HomePagePetugas()));
         }
       } catch (e) {
         Navigator.pushReplacement(
-              context, MaterialPageRoute(builder: (context) => homepage()));
+              context, MaterialPageRoute(builder: (context) => HomePagePetugas()));
       }
     }
   }
@@ -51,7 +54,7 @@ class _InsertuserState extends State<Insertuser> {
       body: Container(
         padding: EdgeInsets.all(12),
         child: Form(
-          key: _formKey, // FormKey dipasang di sini
+          key: _formKey, 
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
@@ -83,18 +86,27 @@ class _InsertuserState extends State<Insertuser> {
                 },
               ),
               SizedBox(height: 16),
-              TextFormField(
-                controller: _role,
+              DropdownButtonFormField<String>(
+                value: selectrole,
                 decoration: InputDecoration(
-                    labelText: 'Role',
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8))),
+                  labelText: 'Pilih Role',
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8)),
+                ),
+                items: listrole.map((String value) {
+                  return DropdownMenuItem<String>(
+                    value: value,
+                    child: Text(value),
+                  );
+                }).toList(),
+                onChanged: (newValue) {
+                  setState(() {
+                    selectrole = newValue;
+                  });
+                },
                 validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Role tidak boleh kosong';
-                  }
-                  if (value != 'petugas' && value != 'admin') {
-                    return 'Hanya bisa menambahkan petugas dan admin';
+                  if (value == null) {
+                    return 'Silakan pilih role';
                   }
                   return null;
                 },

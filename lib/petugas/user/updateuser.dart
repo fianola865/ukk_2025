@@ -1,49 +1,50 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:ukk_2025/homepage.dart';
+import 'package:ukk_2025/petugas/homepagepetugas.dart';
+class UpdateUser extends StatefulWidget {
+  final int UserID;
 
-class UpdatePelanggan extends StatefulWidget {
-  final int PelangganID;
-
-  const UpdatePelanggan({super.key, required this.PelangganID});
+  const UpdateUser({super.key, required this.UserID});
   
   @override
-  State<UpdatePelanggan> createState() => _UpdatePelangganState();
+  State<UpdateUser> createState() => _UpdateUserState();
 }
 
-class _UpdatePelangganState extends State<UpdatePelanggan> {
-  final _nmp = TextEditingController();
-  final _alm = TextEditingController();
-  final _ntp = TextEditingController();
+class _UpdateUserState extends State<UpdateUser> {
+  final _username = TextEditingController();
+  final _password = TextEditingController();
+  final _role = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+  String ? selectrole;
+  List<String> listrole = ['petugas', 'admin'];
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    tampilpelanggan();
+    tampiluser();
   }
 
-  Future<void> tampilpelanggan() async{
-    final pelanggan = await Supabase.instance.client.from('pelanggan').select().eq('PelangganID', widget.PelangganID).single();
+  Future<void> tampiluser() async{
+    final user = await Supabase.instance.client.from('user').select().eq('UserID', widget.UserID).single();
     setState(() {
-      _nmp.text = pelanggan['NamaPelanggan'] ?? '';
-      _alm.text = pelanggan['Alamat'] ?? '';
-      _ntp.text = pelanggan['NomorTelepon'] ?? '';
+      _username.text = user['Username'] ?? '';
+      _password.text = user['Password'] ?? '';
+      _role.text = user['Role'] ?? '';
     });
   }
 
-  Future<void> UpdatePelanggan() async{
+  Future<void> updateuser() async{
     if(_formKey.currentState!.validate()){
      
     }
-    await Supabase.instance.client.from('pelanggan').update({
-      'NamaPelanggan': _nmp.text,
-      'Alamat': _alm.text,
-      'NomorTelepon': _ntp.text,
-    }).eq('PelangganID', widget.PelangganID);
+    await Supabase.instance.client.from('user').update({
+      'Username': _username.text.trim(),
+      'Password': _password.text.trim(),
+      'Role': _role.text.trim()
+    }).eq('UserID', widget.UserID);
    
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => homepage())
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomePagePetugas())
       
     );
     
@@ -53,7 +54,7 @@ class _UpdatePelangganState extends State<UpdatePelanggan> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title:  Text('Form Update Pelanggan'),
+        title:  Text('Form Update User'),
       ),
       body: Container(
         padding: EdgeInsets.all(12),
@@ -63,9 +64,9 @@ class _UpdatePelangganState extends State<UpdatePelanggan> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               TextFormField(
-                controller: _nmp,
+                controller: _username,
                 decoration: InputDecoration(
-                  labelText: 'Nama Pelanggan',
+                  labelText: 'Username',
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(8)
                   ),
@@ -79,9 +80,9 @@ class _UpdatePelangganState extends State<UpdatePelanggan> {
               ),
               SizedBox(height: 16),
               TextFormField(
-                controller: _alm,
+                controller: _password,
                 decoration: InputDecoration(
-                  labelText: 'Alamat',
+                  labelText: 'Password',
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(8)
                   )
@@ -94,28 +95,34 @@ class _UpdatePelangganState extends State<UpdatePelanggan> {
                 },
               ),
               SizedBox(height: 16),
-              TextFormField(
-                controller: _ntp,
-                keyboardType: TextInputType.number,
+              DropdownButtonFormField<String>(
+                value: selectrole,
                 decoration: InputDecoration(
-                  labelText: 'Nomor Telepon',
+                  labelText: 'Pilih Role',
                   border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8)
-                  )
+                      borderRadius: BorderRadius.circular(8)),
                 ),
-                maxLength: 12,
+                items: listrole.map((String listrole) {
+                  return DropdownMenuItem<String>(
+                    value: listrole,
+                    child: Text(listrole),
+                  );
+                }).toList(),
+                onChanged: (newValue) {
+                  setState(() {
+                    selectrole = newValue;
+                  });
+                },
                 validator: (value) {
-                  if(value == null || value.isEmpty){
-                    return ('username tidak boleh kosong');
-                  } if(value.length > 12 ){
-                    return 'tidak boleh lebih dari 12 angka';
+                  if (value == null) {
+                    return 'Silakan pilih role';
                   }
                   return null;
                 },
               ),
               SizedBox(height: 16),
               ElevatedButton(onPressed: (){
-               UpdatePelanggan();
+               updateuser();
               }, child: Text('update'))
             ],
           )

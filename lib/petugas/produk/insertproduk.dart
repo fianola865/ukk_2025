@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:ukk_2025/homepage.dart';
+import 'package:ukk_2025/petugas/homepagepetugas.dart';
 
 class insertProduk extends StatefulWidget {
   const insertProduk({super.key});
@@ -33,11 +33,11 @@ class _insertProdukState extends State<insertProduk> {
               SnackBar(content: Text('Tidak berhasil menambahkan produk')));
         } else {
           Navigator.pushReplacement(
-              context, MaterialPageRoute(builder: (context) => homepage()));
+              context, MaterialPageRoute(builder: (context) => HomePagePetugas()));
         }
       } catch (e) {
         Navigator.pushReplacement(
-              context, MaterialPageRoute(builder: (context) => homepage()));
+              context, MaterialPageRoute(builder: (context) => HomePagePetugas()));
       }
     }
   }
@@ -80,6 +80,9 @@ class _insertProdukState extends State<insertProduk> {
                   if (value == null || value.isEmpty) {
                     return 'tidak boleh kosong';
                   }
+                  if (int.tryParse(value) == null) {
+                    return 'Harus berupa angka';
+                  }
                   return null;
                 },
               ),
@@ -95,6 +98,9 @@ class _insertProdukState extends State<insertProduk> {
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'tidak boleh kosong';
+                  }
+                  if (int.tryParse(value) == null) {
+                    return 'Harus berupa angka';
                   }
                   return null;
                 },

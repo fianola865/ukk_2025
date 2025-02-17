@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:ukk_2025/homepage.dart';
+import 'package:ukk_2025/petugas/homepagepetugas.dart';
 
 class harga extends StatefulWidget {
   final Map<String, dynamic> produk;
@@ -45,33 +45,35 @@ class _hargaState extends State<harga> {
   }
 
   Future<void> simpanPesanan() async {
-    final supabase = Supabase.instance.client;
-    final produkID = widget.produk['ProdukID'];
+  final supabase = Supabase.instance.client;
+  final produkID = widget.produk['ProdukID'];
+  final userId = supabase.auth.currentUser?.id; 
 
-    if (produkID == null || selectedPelangganId == null || jumlahPesanan <= 0) {
-      print("Gagal menyimpan, pastikan semua data sudah lengkap.");
-      return;
-    }
-
-    try {
-      final penjualan = await supabase.from('detailpenjualan').insert({
-        'PenjualanID': selectedPelangganId,
-        'ProdukID': produkID,
-        'JumlahProduk': jumlahPesanan,
-        'Subtotal': totalHarga,
-      }).select().single();
-
-      if (penjualan.isNotEmpty) {
-        await supabase.from('produk').update({
-          'Stok': stokAkhir - jumlahPesanan,
-        }).eq('ProdukID', produkID);
-
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => homepage()));
-      }
-    } catch (e) {
-      print("Error saat menyimpan pesanan: $e");
-    }
+  if (produkID == null || selectedPelangganId == null || jumlahPesanan <= 0 || userId == null) {
+    print("Gagal menyimpan, pastikan semua data sudah lengkap.");
+    return;
   }
+
+  try {
+    final penjualan = await supabase.from('detailpenjualan').insert({
+      'UserID': userId, 
+      'PenjualanID': selectedPelangganId,
+      'ProdukID': produkID,
+      'JumlahProduk': jumlahPesanan,
+      'Subtotal': totalHarga,
+    }).select().single();
+
+    if (penjualan.isNotEmpty) {
+      await supabase.from('produk').update({
+        'Stok': stokAkhir - jumlahPesanan,
+      }).eq('ProdukID', produkID);
+
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomePagePetugas()));
+    }
+  } catch (e) {
+    print("Error saat menyimpan pesanan: $e");
+  }
+}
 
   @override
   Widget build(BuildContext context) {

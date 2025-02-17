@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:ukk_2025/homepage.dart';
+import 'package:ukk_2025/petugas/homepagepetugas.dart';
 
 class UpdateProduk extends StatefulWidget {
   final int ProdukID;
@@ -43,7 +43,7 @@ class _UpdateProdukState extends State<UpdateProduk> {
       'Stok': _st.text,
     }).eq('ProdukID', widget.ProdukID);
    
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => homepage())
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomePagePetugas())
       
     );
     
@@ -91,6 +91,9 @@ class _UpdateProdukState extends State<UpdateProduk> {
                   if(value == null || value.isEmpty) {
                     return 'tidak boleh kosong';
                   }
+                  if (int.tryParse(value) == null) {
+                    return 'Harus berupa angka';
+                  }
                   return null;
                 },
               ),
@@ -109,6 +112,9 @@ class _UpdateProdukState extends State<UpdateProduk> {
                   if(value == null || value.isEmpty){
                     return ('tidak boleh kosong');
                   } 
+                  if (int.tryParse(value) == null) {
+                    return 'Harus berupa angka';
+                  }
                   return null;
                 },
               ),
