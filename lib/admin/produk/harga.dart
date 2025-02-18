@@ -3,29 +3,30 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
-import 'package:ukk_2025/petugas/homepagepetugas.dart';
+import 'package:ukk_2025/admin/homepageadmin.dart';
 
-class harga extends StatefulWidget {
+class hargaAdmin extends StatefulWidget {
   final Map<String, dynamic> produk;
-  const harga({Key? key, required this.produk}) : super(key: key);
+  const hargaAdmin({Key? key, required this.produk}) : super(key: key);
 
   @override
-  _hargaState createState() => _hargaState();
+  _hargaAdminState createState() => _hargaAdminState();
 }
 
-class _hargaState extends State<harga> {
+class _hargaAdminState extends State<hargaAdmin> {
   int jumlahPesanan = 0;
   int stokakhir = 0;
-  int totalHarga = 0;
+  int totalhargaAdmin = 0;
   int? selectedPelangganId;
   List<Map<String, dynamic>> pelangganList = [];
-  final stok = TextEditingController();
+  
 
   @override
   void initState() {
     super.initState();
     fetchPelanggan();
     stokakhir = widget.produk['Stok'] ;
+
   }
 
   Future<void> fetchPelanggan() async {
@@ -39,11 +40,11 @@ class _hargaState extends State<harga> {
     }
   }
 
-  void updateJumlahPesanan(int harga, int delta) {
+  void updateJumlahPesanan(int hargaAdmin, int delta) {
     setState(() {
       if (jumlahPesanan + delta >= 0 && jumlahPesanan + delta <= stokakhir) {
         jumlahPesanan += delta;
-        totalHarga = jumlahPesanan * harga;
+        totalhargaAdmin = jumlahPesanan * hargaAdmin;
       }
     });
   }
@@ -59,7 +60,7 @@ class _hargaState extends State<harga> {
 
     try {
       final penjualan = await supabase.from('penjualan').insert({
-        'TotalHarga': totalHarga,
+        'TotalhargaAdmin': totalhargaAdmin,
         'PelangganID': selectedPelangganId,
       }).select().single();
 
@@ -70,20 +71,23 @@ class _hargaState extends State<harga> {
           'PenjualanID': penjualanId,
           'ProdukID': produkid,
           'JumlahProduk': jumlahPesanan,
-          'Subtotal': totalHarga,
+          'Subtotal': totalhargaAdmin,
         }).select().single();
 
         await supabase.from('produk').update({
           'Stok': stokakhir - jumlahPesanan
         }).eq('ProdukID', produkid);
+        setState(() {
+          stokakhir -= jumlahPesanan;
+        });
 
         // Konfirmasi cetak struk setelah pesanan tersimpan
         showPrintConfirmation(penjualanId);
       } else {
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomePagePetugas()));
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomePageAdmin()));
       }
     } catch (e) {
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomePagePetugas()));
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomePageAdmin()));
     }
   }
 
@@ -109,7 +113,7 @@ class _hargaState extends State<harga> {
     if (confirm == true) {
       generatePDF(penjualanId);
     } else {
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomePagePetugas()));
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomePageAdmin()));
     }
   }
 
@@ -126,7 +130,7 @@ class _hargaState extends State<harga> {
             pw.Text('ID Penjualan: $penjualanId'),
             pw.Text('Nama Produk: ${widget.produk['NamaProduk']}'),
             pw.Text('Jumlah: $jumlahPesanan'),
-            pw.Text('Total Harga: Rp $totalHarga'),
+            pw.Text('Total hargaAdmin: Rp $totalhargaAdmin'),
             pw.SizedBox(height: 16),
             pw.Text('Terima kasih telah berbelanja!', style: pw.TextStyle(fontSize: 18, fontWeight: pw.FontWeight.bold)),
           ],
@@ -138,13 +142,13 @@ class _hargaState extends State<harga> {
       onLayout: (PdfPageFormat format) async => pdf.save(),
     );
 
-    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomePagePetugas()));
+    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomePageAdmin()));
   }
 
   @override
   Widget build(BuildContext context) {
     final produk = widget.produk;
-    final harga = produk['Harga'] ?? 0;
+    final hargaAdmin = produk['hargaAdmin'] ?? 0;
 
     return Scaffold(
       appBar: AppBar(
@@ -163,7 +167,7 @@ class _hargaState extends State<harga> {
               children: [
                 Text('Nama Produk: ${produk['NamaProduk'] ?? 'Tidak Tersedia'}', style: const TextStyle(fontSize: 20)),
                 const SizedBox(height: 16),
-                Text('Harga: $harga', style: const TextStyle(fontSize: 20)),
+                Text('hargaAdmin: $hargaAdmin', style: const TextStyle(fontSize: 20)),
                 const SizedBox(height: 16),
                 Text('Stok: ${produk['Stok'] ?? 'Tidak Tersedia'}', style: const TextStyle(fontSize: 20)),
                 const SizedBox(height: 16),
@@ -187,17 +191,16 @@ class _hargaState extends State<harga> {
                   ),
                 ),
                 const SizedBox(height: 16),
-                
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     IconButton(
-                      onPressed: () => updateJumlahPesanan(harga, -1),
+                      onPressed: () => updateJumlahPesanan(hargaAdmin, -1),
                       icon: const Icon(Icons.remove),
                     ),
                     Text('$jumlahPesanan', style: const TextStyle(fontSize: 20)),
                     IconButton(
-                      onPressed: () => updateJumlahPesanan(harga, 1),
+                      onPressed: () => updateJumlahPesanan(hargaAdmin, 1),
                       icon: const Icon(Icons.add),
                     ),
                   ],
@@ -214,7 +217,7 @@ class _hargaState extends State<harga> {
                     ElevatedButton(
                       onPressed: jumlahPesanan > 0 ? simpanPesanan : null,
                       style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
-                      child: Text('Pesan ($totalHarga)', style: const TextStyle(fontSize: 20)),
+                      child: Text('Pesan ($totalhargaAdmin)', style: const TextStyle(fontSize: 20)),
                     ),
                   ],
                 ),

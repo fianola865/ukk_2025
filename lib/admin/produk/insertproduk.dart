@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:ukk_2025/petugas/homepagepetugas.dart';
+import 'package:ukk_2025/admin/homepageadmin.dart';
 
-class insertProduk extends StatefulWidget {
-  const insertProduk({super.key});
+class InsertProdukAdmin extends StatefulWidget {
+  const InsertProdukAdmin({super.key});
 
   @override
-  State<insertProduk> createState() => _insertProdukState();
+  State<InsertProdukAdmin> createState() => _InsertProdukAdminState();
 }
 
-class _insertProdukState extends State<insertProduk> {
+class _InsertProdukAdminState extends State<InsertProdukAdmin> {
   final _np = TextEditingController();
   final _hr = TextEditingController();
   final _st = TextEditingController();
@@ -33,11 +33,11 @@ class _insertProdukState extends State<insertProduk> {
               SnackBar(content: Text('Tidak berhasil menambahkan produk')));
         } else {
           Navigator.pushReplacement(
-              context, MaterialPageRoute(builder: (context) => HomePagePetugas()));
+              context, MaterialPageRoute(builder: (context) => HomePageAdmin()));
         }
       } catch (e) {
         Navigator.pushReplacement(
-              context, MaterialPageRoute(builder: (context) => HomePagePetugas()));
+              context, MaterialPageRoute(builder: (context) => HomePageAdmin()));
       }
     }
   }

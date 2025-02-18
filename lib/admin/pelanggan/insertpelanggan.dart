@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:ukk_2025/petugas/homepagepetugas.dart';
+import 'package:ukk_2025/admin/homepageadmin.dart';
 
-class Insertpelanggan extends StatefulWidget {
-  const Insertpelanggan({super.key});
+class InsertPelangganAdmin extends StatefulWidget {
+  const InsertPelangganAdmin({super.key});
 
   @override
-  State<Insertpelanggan> createState() => _InsertpelangganState();
+  State<InsertPelangganAdmin> createState() => _InsertPelangganAdminState();
 }
 
-class _InsertpelangganState extends State<Insertpelanggan> {
+class _InsertPelangganAdminState extends State<InsertPelangganAdmin> {
   final _nmp = TextEditingController();
   final _alm = TextEditingController();
   final _ntp = TextEditingController();
@@ -33,11 +33,11 @@ class _InsertpelangganState extends State<Insertpelanggan> {
               SnackBar(content: Text('Tidak berhasil menambahkan user')));
         } else {
           Navigator.pushReplacement(
-              context, MaterialPageRoute(builder: (context) => HomePagePetugas()));
+              context, MaterialPageRoute(builder: (context) => HomePageAdmin()));
         }
       } catch (e) {
         Navigator.pushReplacement(
-              context, MaterialPageRoute(builder: (context) => HomePagePetugas()));
+              context, MaterialPageRoute(builder: (context) => HomePageAdmin()));
       }
     }
   }

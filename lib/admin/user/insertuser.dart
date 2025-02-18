@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:ukk_2025/petugas/homepagepetugas.dart';
+import 'package:ukk_2025/admin/homepageadmin.dart';
 
-class Insertuser extends StatefulWidget {
-  const Insertuser({super.key});
+class InsertUserAdmin extends StatefulWidget {
+  const InsertUserAdmin({super.key});
 
   @override
-  State<Insertuser> createState() => _InsertuserState();
+  State<InsertUserAdmin> createState() => _InsertUserAdminState();
 }
 
-class _InsertuserState extends State<Insertuser> {
+class _InsertUserAdminState extends State<InsertUserAdmin> {
   final _username = TextEditingController();
   final _password = TextEditingController();
   final _role = TextEditingController();
@@ -36,11 +36,11 @@ class _InsertuserState extends State<Insertuser> {
               SnackBar(content: Text('Tidak berhasil menambahkan user')));
         } else {
           Navigator.pushReplacement(
-              context, MaterialPageRoute(builder: (context) => HomePagePetugas()));
+              context, MaterialPageRoute(builder: (context) => HomePageAdmin()));
         }
       } catch (e) {
         Navigator.pushReplacement(
-              context, MaterialPageRoute(builder: (context) => HomePagePetugas()));
+              context, MaterialPageRoute(builder: (context) => HomePageAdmin()));
       }
     }
   }

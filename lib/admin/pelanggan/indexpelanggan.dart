@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:ukk_2025/petugas/pelanggan/insertpelanggan.dart';
-import 'package:ukk_2025/petugas/pelanggan/updatepelanggan.dart';
+import 'package:ukk_2025/admin/pelanggan/insertpelanggan.dart';
+import 'package:ukk_2025/admin/pelanggan/updatepelanggan.dart';
 
-class IndexPelanggan extends StatefulWidget {
-  const IndexPelanggan({super.key});
+class IndexPelangganAdmin extends StatefulWidget {
+  const IndexPelangganAdmin({super.key});
 
   @override
-  State<IndexPelanggan> createState() => _IndexPelangganState();
+  State<IndexPelangganAdmin> createState() => _IndexPelangganAdminState();
 }
 
-class _IndexPelangganState extends State<IndexPelanggan> {
+class _IndexPelangganAdminState extends State<IndexPelangganAdmin> {
   List<Map<String, dynamic>> pelanggan = [];
   List<Map<String, dynamic>> filteredPelanggan = [];
   final searchController = TextEditingController();
@@ -104,19 +104,13 @@ class _IndexPelangganState extends State<IndexPelanggan> {
                                     fontWeight: FontWeight.bold, fontSize: 20),
                               ),
                               SizedBox(height: 8),
-                              Text(
-                                'Alamat: ${planggan['Alamat'] ?? 'tidak tersedia'}',
-                                style: TextStyle(fontSize: 18),
-                              ),
-                              SizedBox(height: 8),
-                              Text(
-                                'Nomor Telepon: ${planggan['NomorTelepon'] ?? 'tidak tersedia'}',
-                                style: TextStyle(fontSize: 18),
-                              ),
-                              
                               Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
                                 children: [
+                                  Text('Alamat: ${planggan['Alamat'] ?? 'tidak tersedia'}',
+                                  style: TextStyle(fontSize: 18),
+                                  ),
+                                  SizedBox(width: 1000),
+                              
                                   IconButton(
                                     icon: Icon(Icons.edit, color: Colors.blue),
                                     onPressed: () {
@@ -125,9 +119,8 @@ class _IndexPelangganState extends State<IndexPelanggan> {
                                         Navigator.push(
                                           context,
                                           MaterialPageRoute(
-                                              builder: (context) =>
-                                                  UpdatePelanggan(
-                                                      PelangganID: PelangganID)),
+                                            builder: (context) => UpdatePelangganAdmin(PelangganID: PelangganID),
+                                          ),
                                         );
                                       } else {
                                         print('ID pelanggan tidak valid');
@@ -138,33 +131,39 @@ class _IndexPelangganState extends State<IndexPelanggan> {
                                     icon: Icon(Icons.delete, color: Colors.red),
                                     onPressed: () {
                                       showDialog(
-                                          context: context,
-                                          builder: (BuildContext context) {
-                                            return AlertDialog(
-                                              title: Text('Hapus pelanggan'),
-                                              content: Text(
-                                                  'Apa Anda yakin ingin menghapus pelanggan ini?'),
-                                              actions: [
-                                                ElevatedButton(
-                                                    onPressed: () {
-                                                      Navigator.pop(context);
-                                                    },
-                                                    child: Text('Batal')),
-                                                ElevatedButton(
-                                                    onPressed: () {
-                                                      deletePelanggan(planggan[
-                                                          'PelangganID']);
-                                                      Navigator.pop(context);
-                                                    },
-                                                    child: Text('Hapus'))
-                                              ],
-                                            );
-                                          });
+                                        context: context,
+                                        builder: (BuildContext context) {
+                                          return AlertDialog(
+                                            title: Text('Hapus pelanggan'),
+                                            content: Text('Apa Anda yakin ingin menghapus pelanggan ini?'),
+                                            actions: [
+                                              ElevatedButton(
+                                                onPressed: () {
+                                                  Navigator.pop(context);
+                                                },
+                                                child: Text('Batal'),
+                                              ),
+                                              ElevatedButton(
+                                                onPressed: () {
+                                                  deletePelanggan(planggan['PelangganID']);
+                                                  Navigator.pop(context);
+                                                },
+                                                child: Text('Hapus'),
+                                              ),
+                                            ],
+                                          );
+                                        },
+                                      );
                                     },
                                   ),
-                                ],
-                              )
-                            ],
+                                ]
+                              ),
+                              SizedBox(height: 8),
+                              Text(
+                                'Nomor Telepon: ${planggan['NomorTelepon'] ?? 'tidak tersedia'}',
+                                style: TextStyle(fontSize: 18),
+                              ),
+                            ]
                           ),
                         ),
                       ),
@@ -174,7 +173,7 @@ class _IndexPelangganState extends State<IndexPelanggan> {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.push(context,
-              MaterialPageRoute(builder: (context) => Insertpelanggan()));
+              MaterialPageRoute(builder: (context) => InsertPelangganAdmin()));
         },
         child: Icon(Icons.add),
       ),

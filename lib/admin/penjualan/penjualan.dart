@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:ukk_2025/petugas/penjualan/insertpenjualan.dart';
-class IndexPenjualanPetugas extends StatefulWidget {
-  const IndexPenjualanPetugas({super.key});
+class IndexPenjualanAdmin extends StatefulWidget {
+  const IndexPenjualanAdmin({super.key});
 
   @override
-  State<IndexPenjualanPetugas> createState() => _IndexPenjualanPetugasState();
+  State<IndexPenjualanAdmin> createState() => _IndexPenjualanAdminState();
 }
 
-class _IndexPenjualanPetugasState extends State<IndexPenjualanPetugas> {
+class _IndexPenjualanAdminState extends State<IndexPenjualanAdmin> {
   List<Map<String, dynamic>> penjualan = [];
   List<int> selectedPenjualan = [];
  
@@ -32,46 +31,50 @@ class _IndexPenjualanPetugasState extends State<IndexPenjualanPetugas> {
     }
   }
 
-  
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body
           : penjualan.isEmpty
-              ? const Center(child: Text('Data penjualan belum ditambahkan'))
-              : Container(
-                padding: EdgeInsets.all(16),
-                child: ListView.builder(
-                  itemCount: penjualan.length,
-                  itemBuilder: (context, index) {
-                    final pjl = penjualan[index];
-                    return Card(
-                      margin: EdgeInsets.symmetric(vertical: 8),
-                      elevation: 4,
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+          ? const Center(child: Text('Data penjualan belum ditambahkan'))
+          : ListView.builder(
+              itemCount: penjualan.length,
+              itemBuilder: (context, index) {
+                final pjl = penjualan[index];
+                return Card(
+                  margin: EdgeInsets.symmetric(vertical: 8),
+                  elevation: 4,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                  child: SizedBox(
+                    height: 180,
+                    child: Padding(
+                      padding: EdgeInsets.all(12),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
                             'Nama Pelanggan: ${pjl['pelanggan']['NamaPelanggan'] ?? 'Tidak tersedia'}',
-                            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
                           ),
+                          SizedBox(height: 8),
                           Text('Tanggal: ${pjl['TanggalPenjualan'] ?? 'Tidak tersedia'}',
-                          style: TextStyle(fontSize: 16),),
+                          style: TextStyle(fontSize: 18),),
+                          SizedBox(height: 8),
                           Text('Total Harga: ${pjl['TotalHarga'] ?? 'Tidak tersedia'}',
-                        style: TextStyle(fontSize: 14),),
+                        style: TextStyle(fontSize: 18),),
                         ],
                       ),
-                    );
-                  },
-                ),
-              ),
-      // floatingActionButton: FloatingActionButton(onPressed: (){
-      //   Navigator.push(context, MaterialPageRoute(builder: (context) => InsertPenjualan(produk: pjl)));
-      // },
-      // child: Icon(Icons.add),
-      // ), 
-    );
+                    )
+                  )
+                );
+              }
+              )
+            );
+  // floatingActionButton: FloatingActionButton(onPressed: (){
+  //   Navigator.push(context, MaterialPageRoute(builder: (context) => InsertPenjualan(produk: pjl)));
+  // },
+  // child: Icon(Icons.add),
+  // ),
+  
   }
 }

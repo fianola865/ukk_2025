@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-class IndexDetail extends StatefulWidget {
-  const IndexDetail({super.key});
+class IndexDetailAdmin extends StatefulWidget {
+  const IndexDetailAdmin({super.key});
 
   @override
-  State<IndexDetail> createState() => _IndexDetailState();
+  State<IndexDetailAdmin> createState() => _IndexDetailAdminState();
 }
 
-class _IndexDetailState extends State<IndexDetail> {
+class _IndexDetailAdminState extends State<IndexDetailAdmin> {
   List<Map<String, dynamic>> detail = [];
   bool isLoading = true;
   Map<int, bool> selectedProduk = {};
@@ -79,6 +79,7 @@ class _IndexDetailState extends State<IndexDetail> {
     }
   }
 
+  
   void showOrderDialog() {
     showDialog(
       context: context,
@@ -107,48 +108,45 @@ class _IndexDetailState extends State<IndexDetail> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body:detail.isEmpty
-              ? Center(child: Text('Penjualan belum ditambahkan', style: TextStyle(fontSize: 18)))
-              : Column(
-                  children: [
-                    Expanded(
-                      child: ListView.builder(
-                        padding: EdgeInsets.all(8),
-                        itemCount: detail.length,
-                        itemBuilder: (context, index) {
-                          final dtl = detail[index];
-                          int produkID = dtl['produk']?['ProdukID'] ?? 0;
-                          double harga = (dtl['Subtotal'] as num?)?.toDouble() ?? 0.0;
-                          return Card(
-                            key: ValueKey(produkID),
-                            elevation: 4,
-                            margin: EdgeInsets.symmetric(vertical: 8),
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                            child: ListTile(
-                              title: Text(
-                                'Nama Produk: ${dtl['produk']?['NamaProduk'] ?? '-'}',
-                                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-                              ),
-                              subtitle: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    'Nama Pelanggan: ${dtl['penjualan']?['pelanggan']?['NamaPelanggan'] ?? '-'}',
-                                  ),
-                                  Text('Jumlah Produk: ${dtl['JumlahProduk'] ?? 'tidak tersedia'}'),
-                                  Text(
-                                    'Total Harga: Rp${harga.toStringAsFixed(2)}',
-                                  ),
-                                ],
-                              ),
-                            ),
-                          );
-                        },
-                      ),
+      body: ListView.builder(
+              padding: EdgeInsets.all(8),
+              itemCount: detail.length,
+              itemBuilder: (context, index) {
+                final dtl = detail[index];
+                int produkID = dtl['produk']?['ProdukID'] ?? 0;
+                double harga = (dtl['Subtotal'] as num?)?.toDouble() ?? 0.0;
+                return Card(
+                  key: ValueKey(produkID),
+                  elevation: 4,
+                  margin: EdgeInsets.symmetric(vertical: 8),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  child: Padding(
+                    padding: EdgeInsets.all(12),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Text('Nama Pelanggan: ${dtl['penjualan']['pelanggan']['NamaPelanggan']}',
+                        style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                        ),
+                        SizedBox(height: 8),
+                        Text('Nama Produk: ${dtl['produk']['NamaProduk']}',
+                        style: TextStyle(fontSize: 20),
+                        ),
+                        SizedBox(height: 8),
+                        Text('JumlahProduk: ${dtl['JumlahProduk']}',
+                        style: TextStyle(fontSize: 18),
+                        ),
+                        SizedBox(height: 8),
+                        Text('Subtotal: ${dtl['Subtotal']}',
+                        style: TextStyle(fontSize: 16),
+                        ),
+                      ],
                     ),
-                    
-                  ],
-                ),
+                  )
+                );
+              },
+            ),
+                
     );
   }
 }

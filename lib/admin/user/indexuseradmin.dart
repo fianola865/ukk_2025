@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:ukk_2025/petugas/user/insertuser.dart';
-import 'package:ukk_2025/petugas/user/updateuser.dart';
+import 'package:ukk_2025/admin/user/insertuser.dart';
+import 'package:ukk_2025/admin/user/updateuser.dart';
 
-class IndexUserPetugas extends StatefulWidget {
-  const IndexUserPetugas({super.key});
+class IndexUseradmin extends StatefulWidget {
+  const IndexUseradmin({super.key});
 
   @override
-  State<IndexUserPetugas> createState() => _IndexUserPetugasState();
+  State<IndexUseradmin> createState() => _IndexUseradminState();
 }
 
-class _IndexUserPetugasState extends State<IndexUserPetugas> {
+class _IndexUseradminState extends State<IndexUseradmin> {
   List<Map<String, dynamic>> user = [];
 
   
@@ -65,24 +65,22 @@ class _IndexUserPetugasState extends State<IndexUserPetugas> {
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Padding(
-                    padding: EdgeInsets.all(8),
+                    padding: EdgeInsets.all(12),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text('Username: ${usr['Username'] ?? 'tidak tersedia'}',
                         style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),),
-                        Text('Password: ${usr['Password']?.toString() ?? 'Tidak tersedia'}',
-                        style: TextStyle( fontSize: 18),),
-                        Text('Role: ${usr['Role']?.toString() ?? 'tidak tersedia'}',
-                        style: TextStyle( fontSize: 16),),
-                        
+                        SizedBox(height: 8),
                         Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
                           children: [
+                            Text('Password: ${usr['Password']?.toString() ?? 'Tidak tersedia'}',
+                            style: TextStyle( fontSize: 18),),
+                            SizedBox(width: 1000),
                             IconButton(onPressed: (){
                               final UserID = usr['UserID'];
                               if(UserID != 0){
-                                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => UpdateUser(UserID: UserID)));
+                                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => UpdateUserAdmin(UserID: UserID)));
                               }
                             }, icon: Icon(Icons.edit, color: Colors.blue,)),
                             IconButton(onPressed: (){
@@ -104,8 +102,11 @@ class _IndexUserPetugasState extends State<IndexUserPetugas> {
                                 }
                               );
                             }, icon: Icon(Icons.delete, color: Colors.red,))
-                          ],
-                        )
+                          ]
+                        ),
+                        SizedBox(height: 8),
+                        Text('Role: ${usr['Role']?.toString() ?? 'tidak tersedia'}',
+                        style: TextStyle( fontSize: 16),),
                       ],
                     ),
                   ),
@@ -114,7 +115,7 @@ class _IndexUserPetugasState extends State<IndexUserPetugas> {
             ),
           
       floatingActionButton: FloatingActionButton(onPressed: (){
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Insertuser()));
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => InsertUserAdmin()));
       }, child: Icon(Icons.add)),
     );
   }

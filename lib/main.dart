@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:ukk_2025/petugas/homepagepetugas.dart';
+import 'package:ukk_2025/admin/homepageadmin.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -90,13 +90,13 @@ class _LoginPageState extends State<LoginPage> {
         if (role == 'admin') {
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (context) => const HomePagePetugas()),
+            MaterialPageRoute(builder: (context) => const HomePageAdmin()),
           );
         } else if (role == 'petugas'){
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => const HomePagePetugas()),
-          );
+          // Navigator.pushReplacement(
+          //   context,
+          //   MaterialPageRoute(builder: (context) => const HomePageAdmin()),
+          // );
         }
         else {
           ScaffoldMessenger.of(context).showSnackBar(

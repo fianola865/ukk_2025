@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:ukk_2025/admin/produk/indexproduk.dart';
+import 'package:ukk_2025/admin/user/indexuseradmin.dart';
 import 'package:ukk_2025/main.dart';
 import 'package:ukk_2025/admin/detail/indexdetail.dart';
 import 'package:ukk_2025/admin/pelanggan/indexpelanggan.dart';
 import 'package:ukk_2025/admin/penjualan/penjualan.dart';
-import 'package:ukk_2025/admin/produk/indexproduk.dart';
-import 'package:ukk_2025/admin/user/indexuserpetugas.dart';
 class HomePageAdmin extends StatefulWidget {
   const HomePageAdmin({super.key});
 
@@ -38,13 +38,16 @@ class _HomePageAdminState extends State<HomePageAdmin> {
           ]
         ),
        ),
+       drawer: Drawer(
+        
+       ),
        body: TabBarView(
         children: [
-          IndexPelanggan(),
-          IndexPenjualanPetugas(),
-          IndexProduk(),
-          IndexDetail(),
-          IndexUserPetugas(),
+          IndexPelangganAdmin(),
+          IndexPenjualanAdmin(),
+          IndexProdukAdmin(),
+          IndexDetailAdmin(),
+          IndexUseradmin(),
         ],
        ),
       ),
