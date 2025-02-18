@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:ukk_2025/admin/detail/indexdetail.dart';
 import 'package:ukk_2025/main.dart';
+import 'package:ukk_2025/admin/detail/indexdetail.dart';
+import 'package:ukk_2025/admin/pelanggan/indexpelanggan.dart';
 import 'package:ukk_2025/admin/penjualan/penjualan.dart';
 import 'package:ukk_2025/admin/produk/indexproduk.dart';
-import 'package:ukk_2025/admin/user/indexuser.dart';
-import 'package:ukk_2025/petugas/pelanggan/indexpelanggan.dart';
+import 'package:ukk_2025/admin/user/indexuserpetugas.dart';
 class HomePageAdmin extends StatefulWidget {
   const HomePageAdmin({super.key});
 
@@ -32,7 +32,7 @@ class _HomePageAdminState extends State<HomePageAdmin> {
           tabs: [
             Tab(icon: Icon(Icons.person,color: Colors.green), text: 'pelanggan'),
             Tab(icon: Icon(Icons.shopping_cart, color: Colors.green), text: 'penjualan'),
-            Tab(icon: Icon(Icons.inventory, color: Colors.green), text: 'produk'),
+            Tab(icon: Icon(Icons.inventory,color: Colors.green), text: 'produk'),
             Tab(icon: Icon(Icons.shopping_bag, color: Colors.green), text: 'detail penjualan'),
             Tab(icon: Icon(Icons.person_3, color: Colors.green), text: 'user')
           ]
@@ -41,10 +41,10 @@ class _HomePageAdminState extends State<HomePageAdmin> {
        body: TabBarView(
         children: [
           IndexPelanggan(),
-          IndexPenjualan(),
+          IndexPenjualanPetugas(),
           IndexProduk(),
           IndexDetail(),
-          IndexUser(),
+          IndexUserPetugas(),
         ],
        ),
       ),

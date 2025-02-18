@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:ukk_2025/admin/produk/harga.dart';
+import 'package:ukk_2025/petugas/produk/harga.dart';
+import 'package:ukk_2025/petugas/produk/updateproduk.dart';
+import 'package:ukk_2025/petugas/user/insertuser.dart';
 
 class IndexProduk extends StatefulWidget {
   const IndexProduk({super.key});
@@ -113,6 +115,57 @@ class _IndexProdukState extends State<IndexProduk> {
                               style: TextStyle(fontSize: 16),),
                               Text('Stok: ${item['Stok'] ?? 'Tidak tersedia'}',
                               style: TextStyle(fontSize: 14),),
+                              
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  IconButton(
+                                    onPressed: () {
+                                      final produkID = item['ProdukID'];
+                                      if (produkID != null) {
+                                        Navigator.pushReplacement(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                UpdateProduk(ProdukID: produkID),
+                                          ),
+                                        );
+                                      }
+                                    },
+                                    icon: Icon(Icons.edit, color: Colors.blue,),
+                                  ),
+                                  IconButton(
+                                    onPressed: () {
+                                      showDialog(
+                                        context: context,
+                                        builder: (BuildContext context) {
+                                          return AlertDialog(
+                                            title: Text('Hapus Produk'),
+                                            content: Text(
+                                                'Apakah Anda yakin ingin menghapus produk ini?'),
+                                            actions: [
+                                              TextButton(
+                                                onPressed: () {
+                                                  Navigator.pop(context);
+                                                },
+                                                child: Text('Batal'),
+                                              ),
+                                              ElevatedButton(
+                                                onPressed: () {
+                                                  deleteProduk(item['ProdukID']);
+                                                  Navigator.pop(context);
+                                                },
+                                                child: Text('Hapus'),
+                                              ),
+                                            ],
+                                          );
+                                        },
+                                      );
+                                    },
+                                    icon: Icon(Icons.delete, color: Colors.red),
+                                  ),
+                                ],
+                              ),
                             ],
                           ),
                         ),
@@ -120,7 +173,15 @@ class _IndexProdukState extends State<IndexProduk> {
                     );
                   },
                 ),
-      
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => Insertuser()),
+          );
+        },
+        child: Icon(Icons.add),
+      ),
     );
   }
 }

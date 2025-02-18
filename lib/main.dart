@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:ukk_2025/admin/homepageadmin.dart';
 import 'package:ukk_2025/petugas/homepagepetugas.dart';
 
 void main() {
@@ -91,7 +90,7 @@ class _LoginPageState extends State<LoginPage> {
         if (role == 'admin') {
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (context) => const HomePageAdmin()),
+            MaterialPageRoute(builder: (context) => const HomePagePetugas()),
           );
         } else if (role == 'petugas'){
           Navigator.pushReplacement(

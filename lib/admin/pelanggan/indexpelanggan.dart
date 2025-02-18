@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:ukk_2025/petugas/pelanggan/insertpelanggan.dart';
+import 'package:ukk_2025/petugas/pelanggan/updatepelanggan.dart';
 
 class IndexPelanggan extends StatefulWidget {
   const IndexPelanggan({super.key});
@@ -111,6 +113,57 @@ class _IndexPelangganState extends State<IndexPelanggan> {
                                 'Nomor Telepon: ${planggan['NomorTelepon'] ?? 'tidak tersedia'}',
                                 style: TextStyle(fontSize: 18),
                               ),
+                              
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  IconButton(
+                                    icon: Icon(Icons.edit, color: Colors.blue),
+                                    onPressed: () {
+                                      final PelangganID = planggan['PelangganID'] ?? 0;
+                                      if (PelangganID != 0) {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  UpdatePelanggan(
+                                                      PelangganID: PelangganID)),
+                                        );
+                                      } else {
+                                        print('ID pelanggan tidak valid');
+                                      }
+                                    },
+                                  ),
+                                  IconButton(
+                                    icon: Icon(Icons.delete, color: Colors.red),
+                                    onPressed: () {
+                                      showDialog(
+                                          context: context,
+                                          builder: (BuildContext context) {
+                                            return AlertDialog(
+                                              title: Text('Hapus pelanggan'),
+                                              content: Text(
+                                                  'Apa Anda yakin ingin menghapus pelanggan ini?'),
+                                              actions: [
+                                                ElevatedButton(
+                                                    onPressed: () {
+                                                      Navigator.pop(context);
+                                                    },
+                                                    child: Text('Batal')),
+                                                ElevatedButton(
+                                                    onPressed: () {
+                                                      deletePelanggan(planggan[
+                                                          'PelangganID']);
+                                                      Navigator.pop(context);
+                                                    },
+                                                    child: Text('Hapus'))
+                                              ],
+                                            );
+                                          });
+                                    },
+                                  ),
+                                ],
+                              )
                             ],
                           ),
                         ),
@@ -118,7 +171,13 @@ class _IndexPelangganState extends State<IndexPelanggan> {
                     );
                   },
                 ),
-      
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => Insertpelanggan()));
+        },
+        child: Icon(Icons.add),
+      ),
     );
   }
 }

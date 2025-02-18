@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:ukk_2025/admin/produk/harga.dart';
+import 'package:ukk_2025/petugas/produk/harga.dart';
 import 'package:ukk_2025/petugas/produk/updateproduk.dart';
 import 'package:ukk_2025/petugas/user/insertuser.dart';
 

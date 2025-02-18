@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:ukk_2025/admin/detail/indexdetail.dart';
 import 'package:ukk_2025/main.dart';
-import 'package:ukk_2025/admin/penjualan/penjualan.dart';
-import 'package:ukk_2025/admin/produk/indexproduk.dart';
+import 'package:ukk_2025/petugas/detail/indexdetail.dart';
 import 'package:ukk_2025/petugas/pelanggan/indexpelanggan.dart';
+import 'package:ukk_2025/petugas/penjualan/penjualan.dart';
+import 'package:ukk_2025/petugas/produk/indexproduk.dart';
 import 'package:ukk_2025/petugas/user/indexuserpetugas.dart';
 class HomePagePetugas extends StatefulWidget {
   const HomePagePetugas({super.key});
@@ -41,7 +41,7 @@ class _HomePagePetugasState extends State<HomePagePetugas> {
        body: TabBarView(
         children: [
           IndexPelanggan(),
-          IndexPenjualan(),
+          IndexPenjualanPetugas(),
           IndexProduk(),
           IndexDetail(),
           IndexUserPetugas(),

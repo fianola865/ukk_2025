@@ -126,10 +126,7 @@ class _IndexDetailState extends State<IndexDetail> {
                             margin: EdgeInsets.symmetric(vertical: 8),
                             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                             child: ListTile(
-                              leading: Checkbox(
-                                value: selectedProduk[produkID] ?? false,
-                                onChanged: (bool? value) => toggleProdukSelection(produkID, harga),
-                              ),
+                              
                               title: Text(
                                 'Nama Produk: ${dtl['produk']?['NamaProduk'] ?? '-'}',
                                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
@@ -151,13 +148,6 @@ class _IndexDetailState extends State<IndexDetail> {
                         },
                       ),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.all(12.0),
-                      child: ElevatedButton(
-                        onPressed: showOrderDialog,
-                        child: Text("Pesan"),
-                      ),
-                    )
                   ],
                 ),
     );

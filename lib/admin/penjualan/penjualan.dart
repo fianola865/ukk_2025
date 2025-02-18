@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-class IndexPenjualan extends StatefulWidget {
-  const IndexPenjualan({super.key});
+import 'package:ukk_2025/petugas/penjualan/insertpenjualan.dart';
+class IndexPenjualanPetugas extends StatefulWidget {
+  const IndexPenjualanPetugas({super.key});
 
   @override
-  State<IndexPenjualan> createState() => _IndexPenjualanState();
+  State<IndexPenjualanPetugas> createState() => _IndexPenjualanPetugasState();
 }
 
-class _IndexPenjualanState extends State<IndexPenjualan> {
+class _IndexPenjualanPetugasState extends State<IndexPenjualanPetugas> {
   List<Map<String, dynamic>> penjualan = [];
   List<int> selectedPenjualan = [];
  
@@ -44,7 +45,7 @@ class _IndexPenjualanState extends State<IndexPenjualan> {
                 child: ListView.builder(
                   itemCount: penjualan.length,
                   itemBuilder: (context, index) {
-                    final item = penjualan[index];
+                    final pjl = penjualan[index];
                     return Card(
                       margin: EdgeInsets.symmetric(vertical: 8),
                       elevation: 4,
@@ -53,20 +54,24 @@ class _IndexPenjualanState extends State<IndexPenjualan> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Nama Pelanggan: ${item['pelanggan']['NamaPelanggan'] ?? 'Tidak tersedia'}',
+                            'Nama Pelanggan: ${pjl['pelanggan']['NamaPelanggan'] ?? 'Tidak tersedia'}',
                             style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
                           ),
-                          Text('Tanggal: ${item['TanggalPenjualan'] ?? 'Tidak tersedia'}',
+                          Text('Tanggal: ${pjl['TanggalPenjualan'] ?? 'Tidak tersedia'}',
                           style: TextStyle(fontSize: 16),),
-                          Text('Total Harga: ${item['TotalHarga'] ?? 'Tidak tersedia'}',
+                          Text('Total Harga: ${pjl['TotalHarga'] ?? 'Tidak tersedia'}',
                         style: TextStyle(fontSize: 14),),
-                        
                         ],
                       ),
                     );
                   },
                 ),
-              )
+              ),
+      // floatingActionButton: FloatingActionButton(onPressed: (){
+      //   Navigator.push(context, MaterialPageRoute(builder: (context) => InsertPenjualan(produk: pjl)));
+      // },
+      // child: Icon(Icons.add),
+      // ), 
     );
   }
 }

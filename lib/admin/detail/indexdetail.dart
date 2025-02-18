@@ -37,10 +37,10 @@ class _IndexDetailState extends State<IndexDetail> {
     }
   }
 
-  void toggleProdukSelection(int produkID, double harga) {
+  void toggleProdukSelection(int ProdukID, double harga) {
     setState(() {
-      selectedProduk[produkID] = !(selectedProduk[produkID] ?? false);
-      totalHarga = selectedProduk[produkID]! ? totalHarga + harga : totalHarga - harga;
+      selectedProduk[ProdukID] = !(selectedProduk[ProdukID] ?? false);
+      totalHarga = selectedProduk[ProdukID]! ? totalHarga + harga : totalHarga - harga;
     });
   }
 
@@ -50,7 +50,7 @@ class _IndexDetailState extends State<IndexDetail> {
       return produkID != null && selectedProduk[produkID] == true;
     }).map((dtl) {
       return {
-        'PelangganID': dtl['penjualan']?['PelangganID'],
+        'PelangganID': dtl['pelanggan']?['PelangganID'],
         'TotalHarga': (dtl['Subtotal'] as num?)?.toDouble() ?? 0.0,
       };
     }).toList();
@@ -79,7 +79,6 @@ class _IndexDetailState extends State<IndexDetail> {
     }
   }
 
-  
   void showOrderDialog() {
     showDialog(
       context: context,
@@ -126,10 +125,6 @@ class _IndexDetailState extends State<IndexDetail> {
                             margin: EdgeInsets.symmetric(vertical: 8),
                             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                             child: ListTile(
-                              leading: Checkbox(
-                                value: selectedProduk[produkID] ?? false,
-                                onChanged: (bool? value) => toggleProdukSelection(produkID, harga),
-                              ),
                               title: Text(
                                 'Nama Produk: ${dtl['produk']?['NamaProduk'] ?? '-'}',
                                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
@@ -151,13 +146,7 @@ class _IndexDetailState extends State<IndexDetail> {
                         },
                       ),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.all(12.0),
-                      child: ElevatedButton(
-                        onPressed: showOrderDialog,
-                        child: Text("Pesan"),
-                      ),
-                    )
+                    
                   ],
                 ),
     );
