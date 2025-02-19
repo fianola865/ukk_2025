@@ -13,7 +13,7 @@ class _InsertPelangganAdminState extends State<InsertPelangganAdmin> {
   final _nmp = TextEditingController();
   final _alm = TextEditingController();
   final _ntp = TextEditingController();
-  String _selectedRoler = 'member';
+  String _selectedRoler = 'silver';
   final _formKey = GlobalKey<FormState>();
 
   Future<void> user() async {
@@ -96,12 +96,16 @@ class _InsertPelangganAdminState extends State<InsertPelangganAdmin> {
                 ), 
                 items: [
                   DropdownMenuItem(
-                    value: 'member',
-                    child: Text('member'),
+                    value: 'silver',
+                    child: Text('silver'),
                   ),
                   DropdownMenuItem(
-                    value: 'nonmember',
-                    child: Text('nonmember'),
+                    value: 'gold',
+                    child: Text('gold'),
+                  ),
+                  DropdownMenuItem(
+                    value: 'platinum',
+                    child: Text('platinum'),
                   ),
                 ],
                 onChanged: (value) {
@@ -113,7 +117,7 @@ class _InsertPelangganAdminState extends State<InsertPelangganAdmin> {
                   if (value == null || value.isEmpty) {
                     return 'Role tidak boleh kosong';
                   }
-                  if (value != 'member' && value != 'nonmember') {
+                  if (value != 'silver' && value != 'gold' && value != 'platinum') {
                     return 'Role hanya boleh admin atau petugas';
                   }
                   return null;

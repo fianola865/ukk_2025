@@ -4,14 +4,14 @@ import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
 
-class HargaProdukAdmin extends StatefulWidget {
-  const HargaProdukAdmin({Key? key}) : super(key: key);
+class HargaProdukPetugas extends StatefulWidget {
+  const HargaProdukPetugas({Key? key}) : super(key: key);
 
   @override
-  _HargaProdukAdminState createState() => _HargaProdukAdminState();
+  _HargaProdukPetugasState createState() => _HargaProdukPetugasState();
 }
 
-class _HargaProdukAdminState extends State<HargaProdukAdmin> {
+class _HargaProdukPetugasState extends State<HargaProdukPetugas> {
   
   List<Map<String, dynamic>> produkList = [];
   

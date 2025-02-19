@@ -61,7 +61,7 @@ class _HargaProdukAdminState extends State<HargaProdukAdmin> {
     final supabase = Supabase.instance.client;
     final response = await supabase
         .from('pelanggan')
-        .select('PelangganID, NamaPelanggan');
+        .select('PelangganID, NamaPelanggan, member');
     if (response != null && response is List) {
       setState(() {
         pelangganList = List<Map<String, dynamic>>.from(response);
@@ -93,17 +93,38 @@ class _HargaProdukAdminState extends State<HargaProdukAdmin> {
 
   
   int getTotalPrice() {
-    int total = 0;
-    for (var produk in produkList) {
-      int productId = produk['ProdukID'] ?? 0;
-      int harga = produk['Harga'] ?? 0;
-      if (productSelected[productId] ?? false) {
-        int qty = productQuantity[productId] ?? 0;
-        total += harga * qty;
-      }
-    }
-    return total;
+  int total = 0;
+  double discount = 0.0;
+
+  // Cari pelanggan yang dipilih
+  var selectedPelanggan = pelangganList.firstWhere(
+      (pelanggan) => pelanggan['PelangganID'] == selectedPelangganId,
+      orElse: () => {});
+
+  // Cek tipe keanggotaan pelanggan
+  String? member = selectedPelanggan['member']; // Asumsikan ada field 'Membership'
+  if (member == 'gold') {
+    discount = 0.05;
+  } else if (member == 'silver') {
+    discount = 0.02;
+  } else if (member == 'platinum') {
+    discount = 0.10;
   }
+
+  for (var produk in produkList) {
+    int productId = produk['ProdukID'] ?? 0;
+    int harga = produk['Harga'] ?? 0;
+    if (productSelected[productId] ?? false) {
+      int qty = productQuantity[productId] ?? 0;
+      total += harga * qty;
+    }
+  }
+
+  // Terapkan diskon
+  total = (total * (1 - discount)).toInt();
+
+  return total;
+}
 
   
   Future<void> saveOrder() async {
