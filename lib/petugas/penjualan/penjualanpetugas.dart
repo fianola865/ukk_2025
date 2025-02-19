@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:ukk_2025/admin/produk/harga.dart';
 import 'package:intl/intl.dart';
-class IndexPenjualanAdmin extends StatefulWidget {
-  const IndexPenjualanAdmin({super.key});
+class IndexPenjualanPetugas extends StatefulWidget {
+  const IndexPenjualanPetugas({super.key});
 
   @override
-  State<IndexPenjualanAdmin> createState() => _IndexPenjualanAdminState();
+  State<IndexPenjualanPetugas> createState() => _IndexPenjualanPetugasState();
 }
 
-class _IndexPenjualanAdminState extends State<IndexPenjualanAdmin> {
+class _IndexPenjualanPetugasState extends State<IndexPenjualanPetugas> {
   List<Map<String, dynamic>> penjualan = [];
   List<int> selectedPenjualan = [];
  

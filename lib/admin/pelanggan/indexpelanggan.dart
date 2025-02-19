@@ -14,7 +14,7 @@ class _IndexPelangganAdminState extends State<IndexPelangganAdmin> {
   List<Map<String, dynamic>> pelanggan = [];
   List<Map<String, dynamic>> filteredPelanggan = [];
   final searchController = TextEditingController();
- 
+  bool isLoading = true;
 
   @override
   void initState() {
@@ -27,21 +27,26 @@ class _IndexPelangganAdminState extends State<IndexPelangganAdmin> {
       await Supabase.instance.client.from('pelanggan').delete().eq('PelangganID', id);
       fetchPelanggan();
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('error $e')));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Pelanggan tidak bisa dihapus karena sudah pernah bertransaksi')));
     }
   }
 
   Future<void> fetchPelanggan() async {
+    setState(() {
+      isLoading = true;
+    });
     try {
       final response = await Supabase.instance.client.from('pelanggan').select();
       setState(() {
         pelanggan = List<Map<String, dynamic>>.from(response);
-        filteredPelanggan = pelanggan; 
-        
+        filteredPelanggan = pelanggan;
+        isLoading = false;
       });
     } catch (e) {
       print('Error: $e');
-      
+      setState(() {
+        isLoading = false;
+      });
     }
   }
 
@@ -68,9 +73,7 @@ class _IndexPelangganAdminState extends State<IndexPelangganAdmin> {
           onChanged: searchPelanggan,
           decoration: InputDecoration(
             hintText: 'Cari pelanggan...',
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8)
-            ),
+            border: InputBorder.none,
           ),
         ),
       ),
@@ -91,80 +94,84 @@ class _IndexPelangganAdminState extends State<IndexPelangganAdmin> {
                       margin: EdgeInsets.symmetric(vertical: 8),
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12)),
-                      child: SizedBox(
-                        height: 180,
-                        child: Padding(
-                          padding: EdgeInsets.all(12),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'Nama Pelanggan: ${planggan['NamaPelanggan'] ?? 'tidak tersedia'}',
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold, fontSize: 20),
-                              ),
-                              SizedBox(height: 8),
-                              Row(
-                                children: [
-                                  Text('Alamat: ${planggan['Alamat'] ?? 'tidak tersedia'}',
-                                  style: TextStyle(fontSize: 18),
+                      child: Padding(
+                        padding: EdgeInsets.all(12),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Nama Pelanggan: ${planggan['NamaPelanggan'] ?? 'tidak tersedia'}',
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold, fontSize: 20),
+                            ),
+                            SizedBox(height: 8),
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: Text(
+                                    'Alamat: ${planggan['Alamat'] ?? 'tidak tersedia'}',
+                                    style: TextStyle(fontSize: 18),
                                   ),
-                                  SizedBox(width: 1000),
-                              
-                                  IconButton(
-                                    icon: Icon(Icons.edit, color: Colors.blue),
-                                    onPressed: () {
-                                      final PelangganID = planggan['PelangganID'] ?? 0;
-                                      if (PelangganID != 0) {
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (context) => UpdatePelangganAdmin(PelangganID: PelangganID),
-                                          ),
-                                        );
-                                      } else {
-                                        print('ID pelanggan tidak valid');
-                                      }
-                                    },
-                                  ),
-                                  IconButton(
-                                    icon: Icon(Icons.delete, color: Colors.red),
-                                    onPressed: () {
-                                      showDialog(
-                                        context: context,
-                                        builder: (BuildContext context) {
-                                          return AlertDialog(
-                                            title: Text('Hapus pelanggan'),
-                                            content: Text('Apa Anda yakin ingin menghapus pelanggan ini?'),
-                                            actions: [
-                                              ElevatedButton(
-                                                onPressed: () {
-                                                  Navigator.pop(context);
-                                                },
-                                                child: Text('Batal'),
-                                              ),
-                                              ElevatedButton(
-                                                onPressed: () {
-                                                  deletePelanggan(planggan['PelangganID']);
-                                                  Navigator.pop(context);
-                                                },
-                                                child: Text('Hapus'),
-                                              ),
-                                            ],
-                                          );
-                                        },
+                                ),
+                                IconButton(
+                                  icon: Icon(Icons.edit, color: Colors.blue),
+                                  onPressed: () {
+                                    final PelangganID = planggan['PelangganID'] ?? 0;
+                                    if (PelangganID != 0) {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => UpdatePelangganAdmin(
+                                              PelangganID: PelangganID),
+                                        ),
                                       );
-                                    },
-                                  ),
-                                ]
-                              ),
-                              SizedBox(height: 8),
-                              Text(
-                                'Nomor Telepon: ${planggan['NomorTelepon'] ?? 'tidak tersedia'}',
-                                style: TextStyle(fontSize: 18),
-                              ),
-                            ]
-                          ),
+                                    } else {
+                                      print('ID pelanggan tidak valid');
+                                    }
+                                  },
+                                ),
+                                IconButton(
+                                  icon: Icon(Icons.delete, color: Colors.red),
+                                  onPressed: () {
+                                    showDialog(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return AlertDialog(
+                                          title: Text('Hapus pelanggan'),
+                                          content: Text(
+                                              'Apa Anda yakin ingin menghapus pelanggan ini?'),
+                                          actions: [
+                                            ElevatedButton(
+                                                onPressed: () {
+                                                  Navigator.pop(context);
+                                                },
+                                                child: Text('Batal')),
+                                            ElevatedButton(
+                                                onPressed: () {
+                                                  deletePelanggan(planggan[
+                                                      'PelangganID']);
+                                                  Navigator.pop(context);
+                                                },
+                                                child: Text('Hapus'))
+                                          ],
+                                        );
+                                      },
+                                    );
+                                  },
+                                ),
+                              ],
+                            ),
+                            SizedBox(height: 8),
+                            Text(
+                              'Role: ${planggan['member'] ?? 'tidak tersedia'}',
+                              style: TextStyle(fontSize: 18),
+                            ),
+                            SizedBox(height: 8),
+                            Text(
+                              'Nomor Telepon: ${planggan['NomorTelepon'] ?? 'tidak tersedia'}',
+                              style: TextStyle(fontSize: 18),
+                            ),
+                          ],
                         ),
                       ),
                     );
@@ -172,8 +179,10 @@ class _IndexPelangganAdminState extends State<IndexPelangganAdmin> {
                 ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Navigator.push(context,
-              MaterialPageRoute(builder: (context) => InsertPelangganAdmin()));
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => InsertPelangganAdmin()));
         },
         child: Icon(Icons.add),
       ),

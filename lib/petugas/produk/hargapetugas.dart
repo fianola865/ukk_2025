@@ -201,7 +201,7 @@ class _HargaProdukAdminState extends State<HargaProdukAdmin> {
     pdf.addPage(
       pw.Page(
         
-        pageFormat: PdfPageFormat.a4, 
+        pageFormat: PdfPageFormat.roll80,
         build: (pw.Context context) {
           return pw.Column(
             crossAxisAlignment: pw.CrossAxisAlignment.start,

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:ukk_2025/admin/homepageadmin.dart';
+import 'package:bcrypt/bcrypt.dart';
 
 class InsertUserAdmin extends StatefulWidget {
   const InsertUserAdmin({super.key});
@@ -10,60 +11,53 @@ class InsertUserAdmin extends StatefulWidget {
 }
 
 class _InsertUserAdminState extends State<InsertUserAdmin> {
-  final _username = TextEditingController();
-  final _password = TextEditingController();
-  final _role = TextEditingController();
+  final _usr = TextEditingController();
+  final _pw = TextEditingController();
+  String _selectedRole = 'admin';  // Default selected role
   final _formKey = GlobalKey<FormState>();
-  List<String> exitingusername = [];
-  String ? selectrole;
-  List<String> listrole = ['petugas', 'admin'];
-  
-  Future<void> user() async {
-    if (_formKey.currentState!.validate()) {
-      final username = _username.text.trim();
-      final password = _password.text.trim();
-      final role = _role.text.trim();
 
-      try {
-        final response = await Supabase.instance.client.from('user').insert({
-              'Username': username,
-              'Password': password,
-              'Role': role
-            });
 
-        if (response.isEmpty) {
-          ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text('Tidak berhasil menambahkan user')));
-        } else {
-          Navigator.pushReplacement(
-              context, MaterialPageRoute(builder: (context) => HomePageAdmin()));
-        }
-      } catch (e) {
-        Navigator.pushReplacement(
-              context, MaterialPageRoute(builder: (context) => HomePageAdmin()));
-      }
-    }
+Future<void> InsertUserAdmin() async {
+  if (_formKey.currentState!.validate()) {
+    final username = _usr.text.trim();
+    final password = _pw.text.trim();
+    final role = _selectedRole;
+
+    // Hash password sebelum menyimpan ke database
+    final hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt());
+
+    await Supabase.instance.client.from('user').insert({
+      'Username': username,
+      'Password': hashedPassword,
+      'Role': role
+    });
+
+    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomePageAdmin()));
   }
+}
+
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Form Tambah User'),
+        title: Text('Tambah User'),
       ),
       body: Container(
-        padding: EdgeInsets.all(12),
+        padding: const EdgeInsets.all(12),
         child: Form(
-          key: _formKey, 
+          key: _formKey,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               TextFormField(
-                controller: _username,
+                controller: _usr,
                 decoration: InputDecoration(
-                    labelText: 'Username',
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8))),
+                  labelText: 'Username',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Username tidak boleh kosong';
@@ -71,13 +65,15 @@ class _InsertUserAdminState extends State<InsertUserAdmin> {
                   return null;
                 },
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               TextFormField(
-                controller: _password,
+                controller: _pw,
                 decoration: InputDecoration(
-                    labelText: 'Password',
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8))),
+                  labelText: 'Password',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Password tidak boleh kosong';
@@ -85,34 +81,45 @@ class _InsertUserAdminState extends State<InsertUserAdmin> {
                   return null;
                 },
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               DropdownButtonFormField<String>(
-                value: selectrole,
+                value: _selectedRole,
                 decoration: InputDecoration(
-                  labelText: 'Pilih Role',
+                  labelText: 'Role',
                   border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8)),
-                ),
-                items: listrole.map((String value) {
-                  return DropdownMenuItem<String>(
-                    value: value,
-                    child: Text(value),
-                  );
-                }).toList(),
-                onChanged: (newValue) {
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ), 
+                items: [
+                  DropdownMenuItem(
+                    value: 'admin',
+                    child: Text('Admin'),
+                  ),
+                  DropdownMenuItem(
+                    value: 'petugas',
+                    child: Text('Petugas'),
+                  ),
+                ],
+                onChanged: (value) {
                   setState(() {
-                    selectrole = newValue;
+                    _selectedRole = value!;
                   });
                 },
                 validator: (value) {
-                  if (value == null) {
-                    return 'Silakan pilih role';
+                  if (value == null || value.isEmpty) {
+                    return 'Role tidak boleh kosong';
+                  }
+                  if (value != 'admin' && value != 'petugas') {
+                    return 'Role hanya boleh admin atau petugas';
                   }
                   return null;
                 },
               ),
-              SizedBox(height: 16),
-              ElevatedButton(onPressed: user, child: Text('Tambah'))
+              const SizedBox(height: 16),
+              ElevatedButton(
+                onPressed: InsertUserAdmin,
+                child: const Text('Tambah'),
+              ),
             ],
           ),
         ),

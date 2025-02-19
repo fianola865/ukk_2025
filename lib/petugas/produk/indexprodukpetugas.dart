@@ -4,14 +4,14 @@ import 'package:ukk_2025/admin/produk/insertproduk.dart';
 import 'package:ukk_2025/admin/produk/updateproduk.dart';
 import 'package:intl/intl.dart';
 
-class IndexProdukAdmin extends StatefulWidget {
-  const IndexProdukAdmin({super.key});
+class IndexProdukPetugas extends StatefulWidget {
+  const IndexProdukPetugas({super.key});
 
   @override
-  State<IndexProdukAdmin> createState() => _IndexProdukAdminState();
+  State<IndexProdukPetugas> createState() => _IndexProdukPetugasState();
 }
 
-class _IndexProdukAdminState extends State<IndexProdukAdmin> {
+class _IndexProdukPetugasState extends State<IndexProdukPetugas> {
   List<Map<String, dynamic>> produk = [];
   List<Map<String, dynamic>> filteredProduk = [];
   bool isLoading = true;

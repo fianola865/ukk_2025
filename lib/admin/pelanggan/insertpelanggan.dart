@@ -13,6 +13,7 @@ class _InsertPelangganAdminState extends State<InsertPelangganAdmin> {
   final _nmp = TextEditingController();
   final _alm = TextEditingController();
   final _ntp = TextEditingController();
+  String _selectedRoler = 'member';
   final _formKey = GlobalKey<FormState>();
 
   Future<void> user() async {
@@ -20,12 +21,14 @@ class _InsertPelangganAdminState extends State<InsertPelangganAdmin> {
       final nmp = _nmp.text;
       final alm = _alm.text;
       final ntp = _ntp.text;
+      final role = _selectedRoler;
 
       try {
         final response = await Supabase.instance.client.from('pelanggan').insert({
               'NamaPelanggan': nmp,
               'Alamat': alm,
-              'NomorTelepon': ntp
+              'NomorTelepon': ntp,
+              'member': role
             });
 
         if (response.isEmpty) {
@@ -78,6 +81,40 @@ class _InsertPelangganAdminState extends State<InsertPelangganAdmin> {
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'tidak boleh kosong';
+                  }
+                  return null;
+                },
+              ),
+              SizedBox(height: 16),
+              DropdownButtonFormField<String>(
+                value: _selectedRoler,
+                decoration: InputDecoration(
+                  labelText: 'Role',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ), 
+                items: [
+                  DropdownMenuItem(
+                    value: 'member',
+                    child: Text('member'),
+                  ),
+                  DropdownMenuItem(
+                    value: 'nonmember',
+                    child: Text('nonmember'),
+                  ),
+                ],
+                onChanged: (value) {
+                  setState(() {
+                    _selectedRoler = value!;
+                  });
+                },
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Role tidak boleh kosong';
+                  }
+                  if (value != 'member' && value != 'nonmember') {
+                    return 'Role hanya boleh admin atau petugas';
                   }
                   return null;
                 },

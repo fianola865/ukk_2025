@@ -1,19 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:ukk_2025/admin/penjualan/grafikadmin.dart';
-import 'package:ukk_2025/admin/produk/indexproduk.dart';
-import 'package:ukk_2025/admin/user/indexuseradmin.dart';
 import 'package:ukk_2025/main.dart';
-import 'package:ukk_2025/admin/detail/indexdetailadmin.dart';
-import 'package:ukk_2025/admin/pelanggan/indexpelanggan.dart';
-import 'package:ukk_2025/admin/penjualan/penjualan.dart';
-class HomePageAdmin extends StatefulWidget {
-  const HomePageAdmin({super.key});
+import 'package:ukk_2025/petugas/detail/indexdetailpetugas.dart';
+import 'package:ukk_2025/petugas/penjualan/grafikpetugas.dart';
+import 'package:ukk_2025/petugas/penjualan/penjualanpetugas.dart';
+import 'package:ukk_2025/petugas/produk/indexprodukpetugas.dart';
+import 'package:ukk_2025/petugas/user/indexuserpetugas.dart';
+class HomePagePetugas extends StatefulWidget {
+  const HomePagePetugas({super.key});
 
   @override
-  State<HomePageAdmin> createState() => _HomePageAdminState();
+  State<HomePagePetugas> createState() => _HomePagePetugasState();
 }
 
-class _HomePageAdminState extends State<HomePageAdmin> {
+class _HomePagePetugasState extends State<HomePagePetugas> {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -39,14 +38,14 @@ class _HomePageAdminState extends State<HomePageAdmin> {
                 leading: Icon(Icons.person, color: Colors.green),
                 title: Text('User'),
                 onTap: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => IndexUserAdmin()));
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => IndexUserPetugas()));
                 },
               ),
               ListTile(
                 leading: Icon(Icons.shopping_bag, color: Colors.green),
                 title: Text('Detail Penjualan'),
                 onTap: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => IndexDetailAdmin()));
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => IndexDetailPetugas()));
                 },
               ),
             ],
@@ -65,18 +64,18 @@ class _HomePageAdminState extends State<HomePageAdmin> {
         bottom: TabBar(
           tabs: [
             Tab(icon: Icon(Icons.bar_chart, color: Colors.green), text: 'Grafik'),
-            Tab(icon: Icon(Icons.inventory,color: Colors.green), text: 'Produk'),
-            Tab(icon: Icon(Icons.person_3, color: Colors.green), text: 'Pelanggan'),
-            Tab(icon: Icon(Icons.shopping_cart, color: Colors.green), text: 'Penjualan'),
+            Tab(icon: Icon(Icons.inventory,color: Colors.green), text: 'produk'),
+            Tab(icon: Icon(Icons.person_3, color: Colors.green), text: 'user'),
+            Tab(icon: Icon(Icons.shopping_cart, color: Colors.green), text: 'penjualan'),
           ]
         ),
        ), 
        body: TabBarView(
         children: [
-           GrafikAdmin(),
-          IndexProdukAdmin(),
-          IndexPelangganAdmin(),
-          IndexPenjualanAdmin()
+          GrafikAdminPetugas(),
+          IndexProdukPetugas(),
+          IndexUserPetugas(),
+          IndexPenjualanPetugas()
         ],
        ),
       ),

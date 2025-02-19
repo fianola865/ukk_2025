@@ -15,6 +15,7 @@ class _UpdatePelangganAdminState extends State<UpdatePelangganAdmin> {
   final _nmp = TextEditingController();
   final _alm = TextEditingController();
   final _ntp = TextEditingController();
+  final _rl = TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
   @override
@@ -30,6 +31,7 @@ class _UpdatePelangganAdminState extends State<UpdatePelangganAdmin> {
       _nmp.text = pelanggan['NamaPelanggan'] ?? '';
       _alm.text = pelanggan['Alamat'] ?? '';
       _ntp.text = pelanggan['NomorTelepon'] ?? '';
+      _rl.text = pelanggan['member'] ?? '';
     });
   }
 
@@ -41,6 +43,7 @@ class _UpdatePelangganAdminState extends State<UpdatePelangganAdmin> {
       'NamaPelanggan': _nmp.text,
       'Alamat': _alm.text,
       'NomorTelepon': _ntp.text,
+      'member': _rl.text
     }).eq('PelangganID', widget.PelangganID);
    
       Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomePageAdmin())
@@ -89,6 +92,22 @@ class _UpdatePelangganAdminState extends State<UpdatePelangganAdmin> {
                 validator: (value) {
                   if(value == null || value.isEmpty) {
                     return 'Password tidak boleh kosong';
+                  }
+                  return null;
+                },
+              ),
+              SizedBox(height: 8),
+              TextFormField(
+                controller: _rl,
+                decoration: InputDecoration(
+                  labelText: 'Role',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8)
+                  )
+                ),
+                validator: (value) {
+                  if(value == null || value.isEmpty) {
+                    return 'Role tidak boleh kosong';
                   }
                   return null;
                 },
